@@ -1,0 +1,78 @@
+{{ define "main" }}
+<section class="hero">
+    <h1>High-Performance ETL Tool Built on Go</h1>
+    <p class="subtitle">Teal combines the best features of dbt, Dagster, and Airflow, delivering a powerful, easy-to-use platform for data engineers and analysts.</p>
+    <div class="hero-buttons">
+        <a href="{{ "/quickstart/" | relURL }}" class="btn btn-primary">
+            <span>Get Started</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </a>
+        <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd" />
+            </svg>
+            <span>View on GitHub</span>
+        </a>
+    </div>
+</section>
+
+<section class="features">
+    <h2>Why Choose Teal?</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Optimized Performance with Go</h3>
+            <p>Leverages Go's concurrency model with goroutines and channels to maximize performance and efficiency, ensuring your data pipelines run quickly and reliably.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📈</div>
+            <h3>Scalable Architecture</h3>
+            <p>Easily scale your data pipelines to handle datasets of any size, ensuring high performance and reliability across your entire data infrastructure.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔌</div>
+            <h3>Flexible Integration</h3>
+            <p>Integrate smoothly with various data sources and destinations including DuckDB, PostgreSQL, and more, offering great flexibility and connectivity.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>SQL-First Approach</h3>
+            <p>Write your transformations in SQL with powerful templating using pongo2 (Django-compatible), making it familiar and easy to use for data analysts.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🧪</div>
+            <h3>Built-in Testing</h3>
+            <p>Ensure data quality with integrated testing framework that verifies data integrity after processing, keeping your pipelines reliable.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Debug UI</h3>
+            <p>Visualize and monitor your DAG execution with the built-in debug UI, making development and debugging a breeze.</p>
+        </div>
+    </div>
+</section>
+
+<section class="features" style="background-color: var(--color-background-alt); padding: 3rem 2rem; margin: 0 0 0 0; max-width: 100%;">
+    <div style="max-width: 1280px; margin: 0 auto;">
+        <h2>Quick Example</h2>
+        <div style="background: var(--color-neutral-dark); color: white; padding: 2rem; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); font-family: var(--font-family-mono); overflow-x: auto;">
+            <pre style="margin: 0; background: transparent; padding: 0; box-shadow: none;"><code>{{ `# Install Teal
+go install github.com/go-teal/teal/cmd/teal@latest
+
+# Initialize your project
+mkdir my_project && cd my_project
+teal init
+
+# Configure and generate
+teal gen
+
+# Run your pipeline
+make run` }}</code></pre>
+        </div>
+    </div>
+</section>
+
+{{ .Content }}
+{{ end }}

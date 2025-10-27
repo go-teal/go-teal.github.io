@@ -1,0 +1,15 @@
+{{ define "main" }}
+<div class="docs-layout">
+    {{ partial "sidebar.html" . }}
+
+    <div class="content-wrapper">
+        <article class="content">
+            <h1>{{ .Title }}</h1>
+            {{ if .Description }}
+            <p style="font-size: 1.125rem; color: var(--color-text-secondary); margin-bottom: 2rem;">{{ .Description }}</p>
+            {{ end }}
+            {{ .Content }}
+        </article>
+    </div>
+</div>
+{{ end }}

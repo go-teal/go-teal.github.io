@@ -1,0 +1,39 @@
+baseURL = 'https://go-teal.github.io/'
+languageCode = 'en-us'
+title = 'Teal - High-Performance ETL Tool'
+theme = 'teal-theme'
+
+[params]
+  description = 'Teal is a high-performance, scalable open-source ETL tool built on Go, designed to streamline data transformation and orchestration.'
+  author = 'Boris Ershov'
+  github = 'https://github.com/go-teal/teal'
+
+[menu]
+  [[menu.main]]
+    name = 'Home'
+    url = '/'
+    weight = 1
+  [[menu.main]]
+    name = 'Quick Start'
+    url = '/quickstart/'
+    weight = 2
+  [[menu.main]]
+    name = 'Documentation'
+    url = '/docs/'
+    weight = 3
+  [[menu.main]]
+    name = 'API Reference'
+    url = '/api/'
+    weight = 4
+  [[menu.main]]
+    name = 'GitHub'
+    url = 'https://github.com/go-teal/teal'
+    weight = 5
+
+[markup]
+  [markup.highlight]
+    style = 'monokai'
+    lineNos = true
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

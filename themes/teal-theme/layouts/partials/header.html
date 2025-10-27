@@ -1,0 +1,15 @@
+<header>
+    <div class="header-container">
+        <a href="{{ "/" | relURL }}" class="logo">
+            <div class="logo-icon">T</div>
+            <span>Teal</span>
+        </a>
+        <nav>
+            <ul>
+                {{ range .Site.Menus.main }}
+                <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>
+                {{ end }}
+            </ul>
+        </nav>
+    </div>
+</header>
