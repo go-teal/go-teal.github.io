@@ -3,66 +3,63 @@
 
     {{ if eq $currentSection "docs" }}
     <!-- Documentation Sidebar -->
-    <div class="sidebar-header">
-        <h2>Documentation</h2>
-    </div>
     <nav class="sidebar-nav">
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Getting Started</h3>
+            <a href="#" class="sidebar-section-link">Getting Started</a>
         </div>
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Core Concepts</h3>
+            <a href="#" class="sidebar-section-link">Core Concepts</a>
         </div>
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Data Sources</h3>
+            <a href="#" class="sidebar-section-link">Data Sources</a>
         </div>
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Configuration</h3>
+            <a href="#" class="sidebar-section-link">Configuration</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Advanced Topics</a>
         </div>
     </nav>
 
     {{ else if eq $currentSection "api" }}
     <!-- API Reference Sidebar -->
-    <div class="sidebar-header">
-        <h2>API Reference</h2>
-    </div>
     <nav class="sidebar-nav">
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">REST API</h3>
+            <a href="#" class="sidebar-section-link">REST API</a>
         </div>
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">CLI Commands</h3>
+            <a href="#" class="sidebar-section-link">CLI Commands</a>
         </div>
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Web Interface</h3>
+            <a href="#" class="sidebar-section-link">Web Interface</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">SDK Reference</a>
         </div>
     </nav>
 
     {{ else if eq $currentSection "quickstart" }}
     <!-- Quick Start Sidebar -->
-    <div class="sidebar-header">
-        <h2>Quick Start</h2>
-    </div>
     <nav class="sidebar-nav">
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Installation</h3>
+            <a href="#" class="sidebar-section-link">Installation</a>
         </div>
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Basic Setup</h3>
+            <a href="#" class="sidebar-section-link">Basic Setup</a>
         </div>
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">First Pipeline</h3>
+            <a href="#" class="sidebar-section-link">First Pipeline</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Next Steps</a>
         </div>
     </nav>
 
     {{ else }}
     <!-- Default Sidebar -->
-    <div class="sidebar-header">
-        <h2>Navigation</h2>
-    </div>
     <nav class="sidebar-nav">
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Overview</h3>
+            <a href="#" class="sidebar-section-link">Overview</a>
         </div>
     </nav>
     {{ end }}
