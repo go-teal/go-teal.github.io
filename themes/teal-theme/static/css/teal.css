@@ -2,37 +2,39 @@
 
 :root {
   /* Main Color Palette */
-  --color-primary: #22c55e;
-  --color-primary-light: #dcfce7;
-  --color-primary-dark: #15803d;
+  --color-primary: #427aa1;        /* Medium blue */
+  --color-primary-light: #ebf2fa;  /* Very light blue-gray */
+  --color-primary-dark: #05668d;   /* Dark blue */
 
-  --color-neutral: #6b7280;
-  --color-neutral-light: #f3f4f6;
-  --color-neutral-dark: #374151;
+  --color-neutral: #427aa1;        /* Medium blue */
+  --color-neutral-light: #ebf2fa;  /* Very light blue-gray */
+  --color-neutral-dark: #05668d;   /* Dark blue */
 
-  --color-background: #fefffe;
-  --color-background-alt: #f7fef9;
+  --color-background: #ebf2fa;     /* Very light blue-gray */
+  --color-background-alt: #ffffff;  /* White for contrast */
 
-  --color-success: #16a34a;
-  --color-success-light: #dcfce7;
-  --color-success-dark: #15803d;
+  --color-white: #ffffff;          /* Pure white */
 
-  --color-warning: #84cc16;
-  --color-warning-light: #ecfccb;
-  --color-warning-dark: #4d7c0f;
+  --color-success: #679436;        /* Olive green */
+  --color-success-light: #ebf2fa;  /* Light blue-gray */
+  --color-success-dark: #679436;   /* Olive green */
 
-  --color-error: #dc2626;
-  --color-error-light: #fee2e2;
-  --color-error-dark: #991b1b;
+  --color-warning: #a5be00;        /* Lime green */
+  --color-warning-light: #ebf2fa;  /* Light blue-gray */
+  --color-warning-dark: #679436;   /* Olive green */
 
-  --color-info: #0ea5e9;
-  --color-info-light: #e0f2fe;
-  --color-info-dark: #075985;
+  --color-error: #dc2626;          /* Red-600 - WCAG compliant */
+  --color-error-light: #fee2e2;    /* Red-100 */
+  --color-error-dark: #991b1b;     /* Red-800 */
+
+  --color-info: #427aa1;           /* Medium blue */
+  --color-info-light: #ebf2fa;     /* Light blue-gray */
+  --color-info-dark: #05668d;      /* Dark blue */
 
   /* Derived Colors */
   --color-text-primary: var(--color-neutral-dark);
   --color-text-secondary: var(--color-neutral);
-  --color-text-muted: #9ca3af;
+  --color-text-muted: var(--color-neutral-light);
   --color-text-inverse: var(--color-background);
 
   --color-border: var(--color-neutral-light);
@@ -580,11 +582,11 @@ footer {
 
 /* Sidebar */
 .sidebar {
-  width: 260px;
-  min-width: 260px;
-  background-color: var(--color-background);
+  width: 240px;
+  min-width: 240px;
+  background-color: var(--color-neutral-light);
   border-right: 1px solid var(--color-border);
-  padding: 1.5rem 0;
+  padding: 2rem 1.5rem;
   position: sticky;
   top: 73px;
   height: calc(100vh - 73px);
@@ -593,66 +595,68 @@ footer {
 }
 
 .sidebar-header {
-  padding: 0 1rem 1rem;
-  margin-bottom: 1rem;
-}
-
-.sidebar-header h2 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.sidebar-nav {
-  padding: 0 0.5rem;
-}
-
-.sidebar-section {
+  padding: 0 0 1rem;
   margin-bottom: 1.5rem;
 }
 
-.sidebar-section-title {
+.sidebar-header h2 {
   font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-neutral-dark);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sidebar-nav {
+  padding: 0;
+}
+
+.sidebar-section {
+  margin-bottom: 1.75rem;
+}
+
+.sidebar-section-title {
+  font-size: 0.6875rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--color-neutral);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.5rem 0.5rem 0.25rem;
-  margin-bottom: 0.25rem;
+  padding: 0;
+  margin-bottom: 0.625rem;
 }
 
 .sidebar-menu {
   list-style: none;
   margin: 0;
   padding: 0;
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .sidebar-menu-item {
-  margin-bottom: 0.125rem;
+  margin: 0;
 }
 
 .sidebar-menu-item a {
   display: block;
-  padding: 0.5rem 0.5rem;
+  padding: 0;
   color: var(--color-text-primary);
   text-decoration: none;
-  border-radius: var(--radius);
-  transition: all 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out;
   font-size: 0.875rem;
-  line-height: 1.3;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 .sidebar-menu-item a:hover {
-  background-color: var(--color-background-alt);
-  color: var(--color-text-primary);
+  color: var(--color-primary);
 }
 
 .sidebar-menu-item a.active {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   font-weight: 500;
 }
 
@@ -662,6 +666,7 @@ footer {
   padding: 2rem 3rem;
   max-width: 900px;
   min-width: 0;
+  background-color: #ffffff;
 }
 
 /* Content Section Updates for Docs Layout */
