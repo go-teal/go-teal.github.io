@@ -1,8 +1,4 @@
 <aside class="sidebar">
-    {{ $currentSection := .Section }}
-
-    {{ if eq $currentSection "docs" }}
-    <!-- Documentation Sidebar -->
     <nav class="sidebar-nav">
         <div class="sidebar-section">
             <a href="#" class="sidebar-section-link">Getting Started</a>
@@ -19,11 +15,6 @@
         <div class="sidebar-section">
             <a href="#" class="sidebar-section-link">Advanced Topics</a>
         </div>
-    </nav>
-
-    {{ else if eq $currentSection "api" }}
-    <!-- API Reference Sidebar -->
-    <nav class="sidebar-nav">
         <div class="sidebar-section">
             <a href="#" class="sidebar-section-link">REST API</a>
         </div>
@@ -33,34 +24,5 @@
         <div class="sidebar-section">
             <a href="#" class="sidebar-section-link">Web Interface</a>
         </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">SDK Reference</a>
-        </div>
     </nav>
-
-    {{ else if eq $currentSection "quickstart" }}
-    <!-- Quick Start Sidebar -->
-    <nav class="sidebar-nav">
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Installation</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Basic Setup</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">First Pipeline</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Next Steps</a>
-        </div>
-    </nav>
-
-    {{ else }}
-    <!-- Default Sidebar -->
-    <nav class="sidebar-nav">
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Overview</a>
-        </div>
-    </nav>
-    {{ end }}
 </aside>
