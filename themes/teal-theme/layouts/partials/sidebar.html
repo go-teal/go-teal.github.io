@@ -1,4 +1,8 @@
 <aside class="sidebar">
+    {{ $currentURL := .RelPermalink }}
+
+    {{ if or (hasPrefix $currentURL "/docs/") (eq $currentURL "/docs/") }}
+    <!-- Documentation Sidebar -->
     <nav class="sidebar-nav">
         <div class="sidebar-section">
             <a href="#" class="sidebar-section-link">Getting Started</a>
@@ -15,6 +19,11 @@
         <div class="sidebar-section">
             <a href="#" class="sidebar-section-link">Advanced Topics</a>
         </div>
+    </nav>
+
+    {{ else if or (hasPrefix $currentURL "/api/") (eq $currentURL "/api/") }}
+    <!-- API Reference Sidebar -->
+    <nav class="sidebar-nav">
         <div class="sidebar-section">
             <a href="#" class="sidebar-section-link">REST API</a>
         </div>
@@ -24,5 +33,43 @@
         <div class="sidebar-section">
             <a href="#" class="sidebar-section-link">Web Interface</a>
         </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">SDK Reference</a>
+        </div>
     </nav>
+
+    {{ else if or (hasPrefix $currentURL "/quickstart/") (eq $currentURL "/quickstart/") }}
+    <!-- Quick Start Sidebar -->
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Installation</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Basic Setup</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">First Pipeline</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Next Steps</a>
+        </div>
+    </nav>
+
+    {{ else }}
+    <!-- Default/All Sections -->
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Getting Started</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Core Concepts</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Data Sources</a>
+        </div>
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-section-link">Configuration</a>
+        </div>
+    </nav>
+    {{ end }}
 </aside>
