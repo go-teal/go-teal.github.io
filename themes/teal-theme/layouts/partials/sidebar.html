@@ -1,75 +1,43 @@
 <aside class="sidebar">
+    {{ $currentPage := . }}
     {{ $currentURL := .RelPermalink }}
 
-    {{ if or (hasPrefix $currentURL "/docs/") (eq $currentURL "/docs/") }}
-    <!-- Documentation Sidebar -->
-    <nav class="sidebar-nav">
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Getting Started</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Core Concepts</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Data Sources</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Configuration</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Advanced Topics</a>
-        </div>
-    </nav>
+    {{- /* Determine which menu to display based on current URL path */ -}}
+    {{ $menuID := "main" }}
+    {{ if hasPrefix $currentURL "/docs/" }}
+        {{ $menuID = "docs" }}
+    {{ else if hasPrefix $currentURL "/api/" }}
+        {{ $menuID = "api" }}
+    {{ else if hasPrefix $currentURL "/quickstart/" }}
+        {{ $menuID = "quickstart" }}
+    {{ end }}
 
-    {{ else if or (hasPrefix $currentURL "/api/") (eq $currentURL "/api/") }}
-    <!-- API Reference Sidebar -->
+    {{- /* Render sidebar navigation based on menu */ -}}
+    {{ with index site.Menus $menuID }}
     <nav class="sidebar-nav">
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">REST API</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">CLI Commands</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Web Interface</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">SDK Reference</a>
-        </div>
-    </nav>
+        {{- range . }}
+            <div class="sidebar-section">
+                {{- $isActive := or ($currentPage.IsMenuCurrent .Menu .) ($currentPage.HasMenuCurrent .Menu .) -}}
+                <a href="{{ or .URL .PageRef }}" class="sidebar-section-link{{ if $isActive }} active{{ end }}"
+                   {{ if $isActive }}aria-current="true"{{ end }}>
+                    {{ .Name }}
+                </a>
 
-    {{ else if or (hasPrefix $currentURL "/quickstart/") (eq $currentURL "/quickstart/") }}
-    <!-- Quick Start Sidebar -->
-    <nav class="sidebar-nav">
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Installation</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Basic Setup</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">First Pipeline</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Next Steps</a>
-        </div>
-    </nav>
-
-    {{ else }}
-    <!-- Default/All Sections -->
-    <nav class="sidebar-nav">
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Getting Started</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Core Concepts</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Data Sources</a>
-        </div>
-        <div class="sidebar-section">
-            <a href="#" class="sidebar-section-link">Configuration</a>
-        </div>
+                {{- /* Render child menu items if they exist */ -}}
+                {{ if .HasChildren }}
+                <ul class="sidebar-menu">
+                    {{ range .Children }}
+                        {{- $isChildActive := or ($currentPage.IsMenuCurrent .Menu .) ($currentPage.HasMenuCurrent .Menu .) -}}
+                        <li class="sidebar-menu-item">
+                            <a href="{{ or .URL .PageRef }}"{{ if $isChildActive }} class="active" aria-current="page"{{ end }}>
+                                {{ .Name }}
+                            </a>
+                        </li>
+                    {{ end }}
+                </ul>
+                {{ end }}
+            </div>
+        {{- end }}
     </nav>
     {{ end }}
 </aside>

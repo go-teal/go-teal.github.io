@@ -8,27 +8,240 @@ theme = 'teal-theme'
   author = 'Boris Ershov'
   github = 'https://github.com/go-teal/teal'
 
-[menu]
-  [[menu.main]]
-    name = 'Home'
-    url = '/'
-    weight = 1
-  [[menu.main]]
-    name = 'Quick Start'
-    url = '/quickstart/'
-    weight = 2
-  [[menu.main]]
-    name = 'Documentation'
-    url = '/docs/'
-    weight = 3
-  [[menu.main]]
-    name = 'API Reference'
-    url = '/api/'
-    weight = 4
-  [[menu.main]]
-    name = 'GitHub'
-    url = 'https://github.com/go-teal/teal'
-    weight = 5
+# Main navigation menu
+[[menus.main]]
+  name = 'Home'
+  pageRef = '/'
+  weight = 1
+
+[[menus.main]]
+  name = 'Quick Start'
+  pageRef = '/quickstart'
+  weight = 2
+
+[[menus.main]]
+  name = 'Documentation'
+  pageRef = '/docs'
+  weight = 3
+
+[[menus.main]]
+  name = 'API Reference'
+  pageRef = '/api'
+  weight = 4
+
+[[menus.main]]
+  name = 'GitHub'
+  url = 'https://github.com/go-teal/teal'
+  weight = 5
+
+# Documentation sidebar menu
+[[menus.docs]]
+  name = 'Configuration'
+  pageRef = '/docs'
+  weight = 1
+
+[[menus.docs]]
+  name = 'config.yaml'
+  pageRef = '/docs#configyaml'
+  parent = 'Configuration'
+  weight = 1
+
+[[menus.docs]]
+  name = 'profile.yaml'
+  pageRef = '/docs#profileyaml'
+  parent = 'Configuration'
+  weight = 2
+
+[[menus.docs]]
+  name = 'Materializations'
+  pageRef = '/docs#materializations'
+  weight = 2
+
+[[menus.docs]]
+  name = 'Template Functions'
+  pageRef = '/docs#template-functions'
+  weight = 3
+
+[[menus.docs]]
+  name = 'Databases'
+  pageRef = '/docs#databases'
+  weight = 4
+
+[[menus.docs]]
+  name = 'DuckDB'
+  pageRef = '/docs#duckdb'
+  parent = 'Databases'
+  weight = 1
+
+[[menus.docs]]
+  name = 'PostgreSQL'
+  pageRef = '/docs#postgresql'
+  parent = 'Databases'
+  weight = 2
+
+[[menus.docs]]
+  name = 'Cross-Database References'
+  pageRef = '/docs#cross-database-references'
+  weight = 5
+
+[[menus.docs]]
+  name = 'Raw Assets'
+  pageRef = '/docs#raw-assets'
+  weight = 6
+
+[[menus.docs]]
+  name = 'Data Testing'
+  pageRef = '/docs#data-testing'
+  weight = 7
+
+[[menus.docs]]
+  name = 'General Architecture'
+  pageRef = '/docs#general-architecture'
+  weight = 8
+
+# API Reference sidebar menu
+[[menus.api]]
+  name = 'Core Packages'
+  pageRef = '/api#core-packages'
+  weight = 1
+
+[[menus.api]]
+  name = 'pkg/core'
+  pageRef = '/api#pkgcore'
+  parent = 'Core Packages'
+  weight = 1
+
+[[menus.api]]
+  name = 'pkg/dags'
+  pageRef = '/api#pkgdags'
+  parent = 'Core Packages'
+  weight = 2
+
+[[menus.api]]
+  name = 'pkg/processing'
+  pageRef = '/api#pkgprocessing'
+  parent = 'Core Packages'
+  weight = 3
+
+[[menus.api]]
+  name = 'pkg/configs'
+  pageRef = '/api#pkgconfigs'
+  parent = 'Core Packages'
+  weight = 4
+
+[[menus.api]]
+  name = 'pkg/drivers'
+  pageRef = '/api#pkgdrivers'
+  parent = 'Core Packages'
+  weight = 5
+
+[[menus.api]]
+  name = 'Command-Line Interface'
+  pageRef = '/api#command-line-interface'
+  weight = 2
+
+[[menus.api]]
+  name = 'teal init'
+  pageRef = '/api#teal-init'
+  parent = 'Command-Line Interface'
+  weight = 1
+
+[[menus.api]]
+  name = 'teal gen'
+  pageRef = '/api#teal-gen'
+  parent = 'Command-Line Interface'
+  weight = 2
+
+[[menus.api]]
+  name = 'Debug UI REST API'
+  pageRef = '/api#debug-ui-rest-api'
+  weight = 3
+
+[[menus.api]]
+  name = 'Custom Asset Development'
+  pageRef = '/api#custom-asset-development'
+  weight = 4
+
+[[menus.api]]
+  name = 'Error Handling'
+  pageRef = '/api#error-handling'
+  weight = 5
+
+[[menus.api]]
+  name = 'Performance Optimization'
+  pageRef = '/api#performance-optimization'
+  weight = 6
+
+# Quick Start sidebar menu
+[[menus.quickstart]]
+  name = 'Installation'
+  pageRef = '/quickstart#installation'
+  weight = 1
+
+[[menus.quickstart]]
+  name = 'Creating Your Project'
+  pageRef = '/quickstart#creating-your-project'
+  weight = 2
+
+[[menus.quickstart]]
+  name = 'Initialize Your Project'
+  pageRef = '/quickstart#initialize-your-project'
+  weight = 3
+
+[[menus.quickstart]]
+  name = 'Configuration'
+  pageRef = '/quickstart#update-configyaml'
+  weight = 4
+
+[[menus.quickstart]]
+  name = 'config.yaml'
+  pageRef = '/quickstart#update-configyaml'
+  parent = 'Configuration'
+  weight = 1
+
+[[menus.quickstart]]
+  name = 'profile.yaml'
+  pageRef = '/quickstart#update-profileyaml'
+  parent = 'Configuration'
+  weight = 2
+
+[[menus.quickstart]]
+  name = 'Generate Go Project'
+  pageRef = '/quickstart#generate-go-project'
+  weight = 5
+
+[[menus.quickstart]]
+  name = 'Run Your Project'
+  pageRef = '/quickstart#run-your-project'
+  weight = 6
+
+[[menus.quickstart]]
+  name = 'Using Make'
+  pageRef = '/quickstart#using-make-recommended-for-development'
+  parent = 'Run Your Project'
+  weight = 1
+
+[[menus.quickstart]]
+  name = 'Production Mode'
+  pageRef = '/quickstart#production-mode'
+  parent = 'Run Your Project'
+  weight = 2
+
+[[menus.quickstart]]
+  name = 'Debug UI Mode'
+  pageRef = '/quickstart#debug-ui-mode'
+  parent = 'Run Your Project'
+  weight = 3
+
+[[menus.quickstart]]
+  name = 'Command-Line Arguments'
+  pageRef = '/quickstart#command-line-arguments'
+  weight = 7
+
+[[menus.quickstart]]
+  name = 'Next Steps'
+  pageRef = '/quickstart#next-steps'
+  weight = 8
 
 [markup]
   [markup.highlight]
