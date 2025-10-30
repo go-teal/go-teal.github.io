@@ -1,32 +1,69 @@
 <aside class="sidebar">
+    {{ $currentSection := .Section }}
+
+    {{ if eq $currentSection "docs" }}
+    <!-- Documentation Sidebar -->
     <div class="sidebar-header">
         <h2>Documentation</h2>
     </div>
-
     <nav class="sidebar-nav">
-        <!-- Getting Started Section -->
         <div class="sidebar-section">
             <h3 class="sidebar-section-title">Getting Started</h3>
         </div>
-
-        <!-- Core Concepts Section -->
         <div class="sidebar-section">
             <h3 class="sidebar-section-title">Core Concepts</h3>
         </div>
-
-        <!-- Data Sources Section -->
         <div class="sidebar-section">
             <h3 class="sidebar-section-title">Data Sources</h3>
         </div>
-
-        <!-- Configuration Section -->
         <div class="sidebar-section">
             <h3 class="sidebar-section-title">Configuration</h3>
         </div>
+    </nav>
 
-        <!-- API Reference Section -->
+    {{ else if eq $currentSection "api" }}
+    <!-- API Reference Sidebar -->
+    <div class="sidebar-header">
+        <h2>API Reference</h2>
+    </div>
+    <nav class="sidebar-nav">
         <div class="sidebar-section">
-            <h3 class="sidebar-section-title">API Reference</h3>
+            <h3 class="sidebar-section-title">REST API</h3>
+        </div>
+        <div class="sidebar-section">
+            <h3 class="sidebar-section-title">CLI Commands</h3>
+        </div>
+        <div class="sidebar-section">
+            <h3 class="sidebar-section-title">Web Interface</h3>
         </div>
     </nav>
+
+    {{ else if eq $currentSection "quickstart" }}
+    <!-- Quick Start Sidebar -->
+    <div class="sidebar-header">
+        <h2>Quick Start</h2>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">
+            <h3 class="sidebar-section-title">Installation</h3>
+        </div>
+        <div class="sidebar-section">
+            <h3 class="sidebar-section-title">Basic Setup</h3>
+        </div>
+        <div class="sidebar-section">
+            <h3 class="sidebar-section-title">First Pipeline</h3>
+        </div>
+    </nav>
+
+    {{ else }}
+    <!-- Default Sidebar -->
+    <div class="sidebar-header">
+        <h2>Navigation</h2>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">
+            <h3 class="sidebar-section-title">Overview</h3>
+        </div>
+    </nav>
+    {{ end }}
 </aside>
