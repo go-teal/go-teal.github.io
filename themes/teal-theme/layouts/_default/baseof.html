@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Params.description }}{{ end }}">
     <meta name="author" content="{{ .Site.Params.author }}">
+    <meta name="keywords" content="ETL, data pipeline, Go, DuckDB, PostgreSQL, SQL, data transformation, open source, dbt alternative, data orchestration">
+    <meta name="robots" content="index, follow">
     <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ .Permalink }}">
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
@@ -13,10 +18,19 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ "css/teal.css" | relURL }}">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
-    <meta property="og:description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ .Permalink }}">
+    <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}">
+    <meta property="og:description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+    <meta property="og:site_name" content="{{ .Site.Title }}">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ .Permalink }}">
+    <meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}">
+    <meta name="twitter:description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Params.description }}{{ end }}">
 
     {{ block "head" . }}{{ end }}
 </head>
@@ -27,8 +41,35 @@
         {{ block "main" . }}{{ end }}
     </main>
 
-    {{ partial "footer.html" . }}
-
     {{ block "scripts" . }}{{ end }}
+
+    <!-- Mermaid.js for diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#ebf2fa',
+                primaryTextColor: '#1a1a1a',
+                primaryBorderColor: '#05668d',
+                lineColor: '#05668d',
+                secondaryColor: '#f5f5f5',
+                tertiaryColor: '#ffffff'
+            }
+        });
+
+        // Convert Hugo's mermaid code blocks to mermaid divs
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('code.language-mermaid').forEach(function(code) {
+                const pre = code.parentElement;
+                const div = document.createElement('div');
+                div.className = 'mermaid';
+                div.textContent = code.textContent;
+                pre.replaceWith(div);
+            });
+            mermaid.run();
+        });
+    </script>
 </body>
 </html>

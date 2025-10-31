@@ -627,4 +627,4 @@ WHERE updated_at > (SELECT MAX(updated_at) FROM {{ this() }})
 
 - [Quick Start Guide](/quickstart/) - Get started with Teal
 - [Full Documentation](/docs/) - Complete feature documentation
-- [GitHub Repository](https://github.com/go-teal/teal) - Source code and examples
+- <a href="https://github.com/go-teal/teal" target="_blank" rel="noopener noreferrer">GitHub Repository</a> - Source code and examples

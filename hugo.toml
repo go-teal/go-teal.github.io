@@ -36,9 +36,38 @@ theme = 'teal-theme'
 
 # Documentation sidebar menu
 [[menus.docs]]
-  name = 'Configuration'
-  pageRef = '/docs'
+  name = 'Overview'
+  pageRef = '/docs#overview'
   weight = 1
+
+[[menus.docs]]
+  name = 'Understanding DAGs'
+  pageRef = '/docs#understanding-dags-in-teal'
+  parent = 'Overview'
+  weight = 1
+
+[[menus.docs]]
+  name = 'Assets'
+  pageRef = '/docs#assets-the-building-blocks'
+  parent = 'Overview'
+  weight = 2
+
+[[menus.docs]]
+  name = 'Stage Architecture'
+  pageRef = '/docs#stage-architecture-organizing-your-pipeline'
+  parent = 'Overview'
+  weight = 3
+
+[[menus.docs]]
+  name = 'Building a SQL DAG'
+  pageRef = '/docs#building-a-sql-dag-complete-example'
+  parent = 'Overview'
+  weight = 4
+
+[[menus.docs]]
+  name = 'Configuration'
+  pageRef = '/docs#configuration'
+  weight = 2
 
 [[menus.docs]]
   name = 'config.yaml'
@@ -55,17 +84,17 @@ theme = 'teal-theme'
 [[menus.docs]]
   name = 'Materializations'
   pageRef = '/docs#materializations'
-  weight = 2
+  weight = 3
 
 [[menus.docs]]
   name = 'Template Functions'
   pageRef = '/docs#template-functions'
-  weight = 3
+  weight = 4
 
 [[menus.docs]]
   name = 'Databases'
   pageRef = '/docs#databases'
-  weight = 4
+  weight = 5
 
 [[menus.docs]]
   name = 'DuckDB'
@@ -82,22 +111,22 @@ theme = 'teal-theme'
 [[menus.docs]]
   name = 'Cross-Database References'
   pageRef = '/docs#cross-database-references'
-  weight = 5
+  weight = 6
 
 [[menus.docs]]
   name = 'Raw Assets'
   pageRef = '/docs#raw-assets'
-  weight = 6
+  weight = 7
 
 [[menus.docs]]
   name = 'Data Testing'
   pageRef = '/docs#data-testing'
-  weight = 7
+  weight = 8
 
 [[menus.docs]]
   name = 'General Architecture'
   pageRef = '/docs#general-architecture'
-  weight = 8
+  weight = 9
 
 # API Reference sidebar menu
 [[menus.api]]
@@ -239,14 +268,19 @@ theme = 'teal-theme'
   weight = 7
 
 [[menus.quickstart]]
+  name = 'AI Assistants'
+  pageRef = '/quickstart#using-generated-documentation-with-ai-assistants'
+  weight = 8
+
+[[menus.quickstart]]
   name = 'Next Steps'
   pageRef = '/quickstart#next-steps'
-  weight = 8
+  weight = 9
 
 [markup]
   [markup.highlight]
-    style = 'monokai'
-    lineNos = true
+    noClasses = false
+    lineNos = false
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true

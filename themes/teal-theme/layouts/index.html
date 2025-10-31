@@ -1,7 +1,7 @@
 {{ define "main" }}
 <section class="hero">
     <h1>High-Performance ETL Tool Built on Go</h1>
-    <p class="subtitle">Teal combines the best features of dbt, Dagster, and Airflow, delivering a powerful, easy-to-use platform for data engineers and analysts.</p>
+    <p class="subtitle">Teal is a high-performance, scalable open-source ETL tool designed to streamline data transformation and orchestration. It provides a lightweight version of tools like <a href="https://www.getdbt.com/" target="_blank" rel="noopener noreferrer">dbt</a>, <a href="https://dagster.io/" target="_blank" rel="noopener noreferrer">Dagster</a>, and <a href="https://airflow.apache.org/" target="_blank" rel="noopener noreferrer">Airflow</a> with basic SQL processing features, while solving common problems found in traditional Python-based solutions.</p>
     <div class="hero-buttons">
         <a href="{{ "/quickstart/" | relURL }}" class="btn btn-primary">
             <span>Get Started</span>
@@ -54,11 +54,10 @@
     </div>
 </section>
 
-<section class="features" style="background-color: var(--color-background-alt); padding: 3rem 2rem; margin: 0 0 0 0; max-width: 100%;">
-    <div style="max-width: 1280px; margin: 0 auto;">
+<section class="quick-example">
+    <div class="quick-example-container">
         <h2>Quick Example</h2>
-        <div style="background: var(--color-neutral-dark); color: white; padding: 2rem; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); font-family: var(--font-family-mono); overflow-x: auto;">
-            <pre style="margin: 0; background: transparent; padding: 0; box-shadow: none;"><code>{{ `# Install Teal
+        {{ highlight `# Install Teal
 go install github.com/go-teal/teal/cmd/teal@latest
 
 # Initialize your project
@@ -69,10 +68,24 @@ teal init
 teal gen
 
 # Run your pipeline
-make run` }}</code></pre>
+make run` "bash" "" }}
+    </div>
+</section>
+
+<section class="open-source">
+    <div class="open-source-container">
+        <h2>Open Source & Community</h2>
+        <p>Teal is open-source software released under the <a href="https://github.com/go-teal/teal/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>. We welcome contributions from the community!</p>
+        <p>Whether you want to report bugs, suggest features, improve documentation, or contribute code, we'd love to have you join us.</p>
+        <div class="open-source-buttons">
+            <a href="{{ .Site.Params.github }}/issues" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                <span>Report an Issue</span>
+            </a>
         </div>
     </div>
 </section>
 
 {{ .Content }}
+
+{{ partial "footer.html" . }}
 {{ end }}
