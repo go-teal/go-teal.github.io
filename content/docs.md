@@ -252,12 +252,12 @@ where actual_arrival > (select coalesce(max(actual_arrival), '1900-01-01'::times
 ```
 
 This fact table model demonstrates **incremental loading**:
-- **Depends on** `staging.stg_flights` and `dds.dim_routes` via [`{{ Ref() }}`](#template-functions) - creates edges in the DAG
+- **Depends on** `staging.stg_flights` and `dds.dim_routes` via [`{{ Ref() }}`](/api/#template-functions) - creates edges in the DAG
 - Uses [`materialization: 'incremental'`](#materializations) to append only new data instead of full refresh (see [Materializations](#materializations))
-- **IsIncremental() pattern**: The [`{% if IsIncremental() %}`](#template-functions) block adds a filter on subsequent runs (see [Template Functions](#template-functions)):
+- **IsIncremental() pattern**: The [`{% if IsIncremental() %}`](/api/#template-functions) block adds a filter on subsequent runs (see [Template Functions](/api/#template-functions)):
   - **First run**: No filter, loads all historical data
   - **Subsequent runs**: Only loads flights with `actual_arrival` newer than the max value already in the table
-  - Uses [`{{ this() }}`](#template-functions) to reference the current table for checking the max timestamp
+  - Uses [`{{ this() }}`](/api/#template-functions) to reference the current table for checking the max timestamp
 - Adds **surrogate key** using SHA256 hashing for composite business keys
 - Calculates **derived metrics** (delays, on-time performance) at load time
 - Defines **indexes** on flight_id (unique) and flight_date for query performance
@@ -355,7 +355,7 @@ group by
 ```
 
 This mart model:
-- **Depends on** three DDS models via [`{{ Ref() }}`](#template-functions) - creates multiple edges in the DAG (see [Template Functions](#template-functions))
+- **Depends on** three DDS models via [`{{ Ref() }}`](/api/#template-functions) - creates multiple edges in the DAG (see [Template Functions](/api/#template-functions))
 - Performs **multi-table joins** across dimensions and facts
 - Calculates **aggregated KPIs** (on-time percentage, average delays)
 - Uses [`materialization: 'view'`](#materializations) for real-time analytics (see [Materializations](#materializations))
@@ -531,73 +531,6 @@ Teal supports several materialization types for your SQL models:
 | **view** | SQL query saved as a view. |
 | **custom** | Custom SQL query executed; no tables or views created. |
 | **raw** | Custom Go function executed. |
-
-## Template Functions
-
-Teal uses the **[pongo2](https://github.com/flosch/pongo2) template engine** (v6), which is **Django-compatible**. This means you can use familiar Django/Jinja2 template syntax in your SQL models.
-
-### Static and Dynamic Functions
-
-Teal distinguishes between generation-time and runtime evaluation:
-
-**Static functions** (evaluated during `teal gen` - **double braces** `{{ }}`):
-
-```sql
-{{ Ref("staging.model") }}  -- Replaced with actual table name during code generation
-```
-
-**Dynamic variables and functions** (evaluated at runtime - **single braces** `{ }`):
-
-```sql
-'{ TaskID }' as task_id
-'{ TaskUUID }' as task_uuid
-'{ InstanceName }' as instance
-'{ InstanceUUID }' as instance_uuid
-'{ ENV("SOURCE_SCHEMA", "public") }' as schema
-```
-
-**Dynamic control structures** (evaluated at runtime - Django/Jinja2 syntax):
-
-```sql
-{% if IsIncremental() %}
-    WHERE updated_at > (SELECT MAX(updated_at) FROM {{ this() }})
-{% endif %}
-```
-
-### List of Functions
-
-| Name | Input Parameters | Output | When Evaluated | Description | Example |
-|------|-----------------|--------|----------------|-------------|---------|
-| Ref | `"<stage>.<model>"` | string | Static | Main function for DAG dependencies. Replaced with actual table name during `teal gen`. | `{{ Ref("staging.customers") }}` |
-| this | None | string | Both | Returns the name of the current table. | `{{ this() }}` or `{ this() }` |
-| ENV | `envName`, `defaultValue` | string | Dynamic | Gets environment variable value at runtime. | `{ ENV("DB_SCHEMA", "public") }` |
-| IsIncremental | None | boolean | Dynamic | Returns true if model is in incremental mode. | `{% if IsIncremental() %}...{% endif %}` |
-| TaskID | (variable) | string | Dynamic | The task identifier from the Push method. | `{ TaskID }` |
-| TaskUUID | (variable) | string | Dynamic | The unique UUID assigned for task tracking. | `{ TaskUUID }` |
-| InstanceName | (variable) | string | Dynamic | The DAG instance name. | `{ InstanceName }` |
-| InstanceUUID | (variable) | string | Dynamic | The unique UUID assigned to the DAG instance. | `{ InstanceUUID }` |
-
-### Complete Example
-
-```sql
-{{ define "profile.yaml" }}
-    materialization: 'incremental'
-    is_data_framed: true
-{{ end }}
-
-SELECT
-    order_id,
-    customer_id,
-    order_date,
-    total_amount,
-    '{ TaskID }' as etl_task_id,
-    '{ TaskUUID }' as etl_run_id,
-    current_timestamp as processed_at
-FROM {{ Ref("staging.raw_orders") }}
-{% if IsIncremental() %}
-    WHERE order_date > (SELECT COALESCE(MAX(order_date), '1900-01-01') FROM {{ this() }})
-{% endif %}
-```
 
 ## Databases
 
@@ -839,15 +772,75 @@ Teal generates two entry points for different use cases:
 
 ### Production Binary (my-test-project.go)
 - Uses **Channel DAG** for high-performance concurrent execution
-- Generates unique task names with timestamps
-- Optimized for production deployments
+- Generates unique task names with timestamps (e.g., `my-test-project_1703123456`)
+- Optimized for production deployments with minimal dependencies
 - No UI server or debugging overhead
+
+**Command-line arguments:**
+- `--task-name` - Custom task name (optional, auto-generated if not provided)
+- `--input-data` - Input data in JSON format (optional)
+- `--log-output` - Log output format: `json` or `raw` (default: `json`)
+- `--log-level` - Log level: `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` (default: `debug`)
+- `--with-tests` - Run with tests enabled (default: `true`)
 
 ### Debug UI Binary (my-test-project-ui.go)
 - Uses **Debug DAG** for visualization and monitoring
 - Provides REST API endpoints for DAG control and status
 - Includes execution tracking and task history
 - Ideal for development and debugging
+
+**Recommended: Use `teal ui` command with hot-reload:**
+```bash
+# API server on port 8080, UI Dashboard on port 8081
+teal ui --port 8080 --log-level debug
+
+# Custom ports: API on 9090, UI Dashboard on 9091
+teal ui --port 9090 --log-level info
+```
+
+The `teal ui` command provides:
+- Automatic file watching (assets, config, profile)
+- Hot-reload on changes (regenerates code and restarts API server)
+- Graceful shutdown handling
+- Built-in debouncing to prevent excessive regenerations
+
+**Direct execution command-line arguments:**
+- `--port` - Port for API server (default: `8080`). UI Dashboard runs on port + 1 (default: `8081`)
+- `--log-output` - Log output format: `json` or `raw` (default: `raw`)
+- `--log-level` - Log level: `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` (default: `info`)
+
+**What watches for changes:**
+- `assets/` directory (all SQL models and tests)
+- `profile.yaml` file
+- `config.yaml` file
+
+**UI Dashboard:**
+
+When the debug UI server starts, it automatically launches a companion **UI Dashboard** web application on port `8081` (API port + 1). This provides a visual interface for monitoring and controlling your data pipelines:
+
+**Features:**
+- **DAG Visualization**: Interactive graph showing all assets and their dependencies
+- **Execution Control**: Trigger DAG runs, monitor task status, and view execution history
+- **Test Results**: View test execution results and data quality checks
+- **Asset Inspection**: Examine asset data and execution results
+- **Real-time Logs**: View logs for specific task executions
+- **API Documentation**: Full REST API access for programmatic control
+
+**Access:**
+```bash
+# Start the UI server (API on port 8080, Dashboard on port 8081)
+teal ui
+
+# Or with custom port (API on 9090, Dashboard on 9091)
+teal ui --port 9090
+```
+
+The UI Dashboard is served on `http://localhost:8081` (or custom port + 1) and automatically connects to the API server. All frontend assets are embedded in the binary for zero-dependency deployment.
+
+**Architecture:**
+- **API Server** (port 8080): REST API for DAG operations, tests, and data access
+- **UI Dashboard** (port 8081): Vue.js-based web interface with embedded assets
+- **Single Binary**: Both servers run from the same executable with no external dependencies
 
 **How It Works:**
 

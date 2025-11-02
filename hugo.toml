@@ -87,14 +87,9 @@ theme = 'teal-theme'
   weight = 3
 
 [[menus.docs]]
-  name = 'Template Functions'
-  pageRef = '/docs#template-functions'
-  weight = 4
-
-[[menus.docs]]
   name = 'Databases'
   pageRef = '/docs#databases'
-  weight = 5
+  weight = 4
 
 [[menus.docs]]
   name = 'DuckDB'
@@ -111,28 +106,33 @@ theme = 'teal-theme'
 [[menus.docs]]
   name = 'Cross-Database References'
   pageRef = '/docs#cross-database-references'
-  weight = 6
+  weight = 5
 
 [[menus.docs]]
   name = 'Raw Assets'
   pageRef = '/docs#raw-assets'
-  weight = 7
+  weight = 6
 
 [[menus.docs]]
   name = 'Data Testing'
   pageRef = '/docs#data-testing'
-  weight = 8
+  weight = 7
 
 [[menus.docs]]
   name = 'General Architecture'
   pageRef = '/docs#general-architecture'
-  weight = 9
+  weight = 8
 
 # API Reference sidebar menu
 [[menus.api]]
+  name = 'Template Functions'
+  pageRef = '/api#template-functions'
+  weight = 1
+
+[[menus.api]]
   name = 'Core Packages'
   pageRef = '/api#core-packages'
-  weight = 1
+  weight = 2
 
 [[menus.api]]
   name = 'pkg/core'
@@ -167,7 +167,7 @@ theme = 'teal-theme'
 [[menus.api]]
   name = 'Command-Line Interface'
   pageRef = '/api#command-line-interface'
-  weight = 2
+  weight = 3
 
 [[menus.api]]
   name = 'teal init'
@@ -180,11 +180,6 @@ theme = 'teal-theme'
   pageRef = '/api#teal-gen'
   parent = 'Command-Line Interface'
   weight = 2
-
-[[menus.api]]
-  name = 'Debug UI REST API'
-  pageRef = '/api#debug-ui-rest-api'
-  weight = 3
 
 [[menus.api]]
   name = 'Custom Asset Development'

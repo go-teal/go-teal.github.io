@@ -111,11 +111,40 @@ Files 26
 
 ### Post-Generation Steps
 
-Run `go mod tidy` to install dependencies:
+Run `go mod tidy` to install dependencies.
 
 ## Run Your Project
 
-### Using Make (Recommended for Development)
+### Start Development with Hot-Reload (Recommended)
+
+```bash
+# Start UI server with automatic file watching and hot-reload
+teal ui
+
+# Access the UI Dashboard at http://localhost:8081
+# API server runs on http://localhost:8080
+```
+
+The `teal ui` command watches for changes in:
+- `assets/` (all SQL models and tests)
+- `profile.yaml`
+- `config.yaml`
+
+When changes are detected, it automatically:
+1. Regenerates Go code
+2. Restarts the API server
+3. Maintains the same ports
+
+**UI Dashboard** (http://localhost:8081) provides a visual interface with:
+- Interactive DAG visualization
+- Real-time execution monitoring
+- Test results and data quality checks
+- Asset data inspection
+- Execution logs
+
+![Teal Debug UI Dashboard](/images/dashboard.png)
+
+### Using Make (Alternative for Development)
 
 ```bash
 # Generate assets and run UI debug server (default port 8080)
@@ -165,7 +194,7 @@ Then run with various options:
   --log-output json
 ```
 
-### Debug UI Mode
+### Debug UI Mode (Without Hot-Reload)
 
 ```bash
 # Run UI debug server directly
@@ -177,6 +206,18 @@ go run ./cmd/my-test-project-ui/my-test-project-ui.go --port 9090
 
 ## Command-Line Arguments
 
+### teal ui Command
+
+- `--port` - Port for API server (default: `8080`). UI Dashboard runs on port + 1 (default: `8081`)
+- `--log-output` - Log output format: `json` or `raw` (default: `raw`)
+- `--log-level` - Log level: `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` (default: `info`)
+
+Example with custom port:
+```bash
+# API server on port 9090, UI Dashboard on port 9091
+teal ui --port 9090 --log-level debug
+```
+
 ### Production Binary
 
 - `--task-name` - Custom task name (optional, auto-generated if not provided)
@@ -185,9 +226,9 @@ go run ./cmd/my-test-project-ui/my-test-project-ui.go --port 9090
 - `--log-level` - Log level: `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` (default: `debug`)
 - `--with-tests` - Run with tests enabled (default: `true`)
 
-### Debug UI Binary
+### Debug UI Binary (Direct Execution)
 
-- `--port` - Port for debug UI server (default: `8080`)
+- `--port` - Port for API server (default: `8080`). UI Dashboard runs on port + 1
 - `--log-output` - Log output format: `json` or `raw` (default: `raw`)
 - `--log-level` - Log level (default: `info`)
 
@@ -223,6 +264,6 @@ Add docs/README.md to workspace context
 ## Next Steps
 
 - Read the [Documentation](/docs/) to learn about advanced features
-- Explore [Materializations](/docs/#materializations) and [Template Functions](/docs/#template-functions)
+- Explore [Materializations](/docs/#materializations) and [Template Functions](/api/#template-functions)
 - Learn about [Data Testing](/docs/#data-testing) to ensure data quality
 - Check out [Cross-Database References](/docs/#cross-database-references) for multi-database workflows

@@ -20,6 +20,9 @@
 
 <section class="features">
     <h2>Why Choose Teal?</h2>
+    <div class="python-go-comparison">
+        <img src="{{ "images/python_go.jpg" | relURL }}" alt="No Python snake with prohibition symbol, Yes to Go gopher - illustrating Teal's choice of Go over Python for better performance">
+    </div>
     <div class="features-grid">
         <div class="feature-card">
             <div class="feature-icon">⚡</div>
@@ -66,9 +69,13 @@ teal init
 
 # Configure and generate
 teal gen
+go mod tidy
 
-# Run your pipeline
-make run` "bash" "" }}
+# Run your UI Dashboard
+teal ui` "bash" "" }}
+        <div class="dashboard-preview">
+            <img src="{{ "images/dashboard.png" | relURL }}" alt="Teal Debug UI Dashboard showing DAG visualization with staging and dds layers, asset details panel, and query information">
+        </div>
     </div>
 </section>
 

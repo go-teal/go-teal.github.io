@@ -7,6 +7,82 @@ description: "Complete API reference for Teal's Go packages, interfaces, and fun
 
 This page provides a comprehensive API reference for Teal's core packages and interfaces. Use this reference when extending Teal with custom functionality or integrating it into your Go applications.
 
+## Template Functions
+
+Teal uses the **[pongo2](https://github.com/flosch/pongo2) template engine** (v6), which is **Django-compatible**. This means you can use familiar Django/Jinja2 template syntax in your SQL models.
+
+### Template Engine Features
+
+- **Django-compatible syntax**: If you know Django templates or Jinja2, you already know pongo2
+- **Control structures**: `{% if condition %}...{% endif %}`, `{% for item in items %}...{% endfor %}`
+- **Variables and filters**: `{{ variable }}`, `{{ variable|upper }}`, `{{ variable|safe }}`
+- **Template inheritance**: `{% extends %}` and `{% block %}` (for advanced use cases)
+- **Comments**: `{# This is a comment #}`
+
+### Static and Dynamic Evaluation
+
+Teal template functions are evaluated at different stages:
+
+**Generation-time evaluation** (during `teal gen`):
+- `{{ Ref("staging.model") }}` - Replaced with actual table name and establishes DAG dependencies
+- `{{ this() }}` - Replaced with current model's table name
+
+**Runtime evaluation** (during DAG execution):
+- `{{ TaskID }}` - Current task identifier
+- `{{ TaskUUID }}` - Unique task UUID
+- `{{ InstanceName }}` - DAG instance name
+- `{{ InstanceUUID }}` - DAG instance UUID
+- `{{ ENV("VAR_NAME", "default") }}` - Environment variable value
+- `{% if IsIncremental() %}...{% endif %}` - Control structures
+
+**Example showing both:**
+```sql
+-- Generation time: Ref() resolves to "staging.raw_orders"
+-- Runtime: TaskID gets actual value during execution
+SELECT *
+FROM {{ Ref("staging.raw_orders") }}
+WHERE task_id = '{{ TaskID }}'
+```
+
+**Processing Flow:**
+1. **During `teal gen`**: `{{ Ref(...) }}` and `{{ this() }}` are evaluated and replaced with actual table names. All other template syntax is preserved in the generated Go code.
+2. **At runtime**: `{{ TaskID }}`, `{{ ENV(...) }}`, and control structures `{% %}` are evaluated when SQL executes during DAG execution.
+
+### List of Functions
+
+| Name | Input Parameters | Output | When Evaluated | Description | Example |
+|------|-----------------|--------|----------------|-------------|---------|
+| Ref | `"<stage>.<model>"` | string | Generation-time | Main function for DAG dependencies. Replaced with actual table name during `teal gen`. | `{{ Ref("staging.customers") }}` |
+| this | None | string | Generation-time | Returns the name of the current table. | `{{ this() }}` |
+| ENV | `envName`, `defaultValue` | string | Runtime | Gets environment variable value at runtime. | `{{ ENV("DB_SCHEMA", "public") }}` |
+| IsIncremental | None | boolean | Runtime | Returns true if model is in incremental mode. Use in control structures. | `{% if IsIncremental() %}...{% endif %}` |
+| TaskID | (variable) | string | Runtime | The task identifier from the Push method. | `{{ TaskID }}` |
+| TaskUUID | (variable) | string | Runtime | The unique UUID assigned for task tracking. | `{{ TaskUUID }}` |
+| InstanceName | (variable) | string | Runtime | The DAG instance name. | `{{ InstanceName }}` |
+| InstanceUUID | (variable) | string | Runtime | The unique UUID assigned to the DAG instance. | `{{ InstanceUUID }}` |
+
+### Complete Example
+
+```sql
+{{ define "profile.yaml" }}
+    materialization: 'incremental'
+    is_data_framed: true
+{{ end }}
+
+SELECT
+    order_id,
+    customer_id,
+    order_date,
+    total_amount,
+    '{{ TaskID }}' as etl_task_id,
+    '{{ TaskUUID }}' as etl_run_id,
+    current_timestamp as processed_at
+FROM {{ Ref("staging.raw_orders") }}  -- Resolved at generation-time
+{% if IsIncremental() %}
+    WHERE order_date > (SELECT COALESCE(MAX(order_date), '1900-01-01') FROM {{ this() }})
+{% endif %}
+```
+
 ## Core Packages
 
 ### pkg/core
@@ -379,104 +455,38 @@ teal gen [flags]
 - `docs/README.md` - Project documentation
 - `docs/graph.mmd` - Mermaid DAG visualization
 
-## Debug UI REST API
+### teal ui
 
-When running with the Debug UI binary, a REST API is available for DAG control and monitoring.
+Starts the Debug UI server with hot-reload for development.
 
-### Base URL
-
-```
-http://localhost:8080
+```bash
+teal ui [flags]
 ```
 
-### Endpoints
+**Flags:**
+- `--port` - Port for API server (default: `8080`). UI Dashboard runs on port + 1 (default: `8081`)
+- `--log-output` - Log output format: `json` or `raw` (default: `raw`)
+- `--log-level` - Log level: `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` (default: `info`)
 
-#### GET /api/dag
+**Example:**
+```bash
+# Start with default ports (API: 8080, UI Dashboard: 8081)
+teal ui
 
-Returns the current DAG structure and status.
-
-**Response:**
-
-```json
-{
-  "nodes": [
-    {
-      "name": "staging.model1",
-      "upstreams": [],
-      "downstreams": ["dds.fact1"],
-      "status": "completed"
-    }
-  ],
-  "edges": [
-    {
-      "from": "staging.model1",
-      "to": "dds.fact1"
-    }
-  ]
-}
+# Start with custom ports (API: 9090, UI Dashboard: 9091)
+teal ui --port 9090 --log-level debug
 ```
 
-#### POST /api/run
+**Features:**
+- Automatic file watching for `assets/`, `profile.yaml`, and `config.yaml`
+- Hot-reload on changes (regenerates code and restarts API server)
+- Launches both API server and UI Dashboard web application
+- Graceful shutdown handling
+- Built-in debouncing to prevent excessive regenerations
 
-Triggers DAG execution.
-
-**Request Body:**
-
-```json
-{
-  "taskName": "manual_run_001",
-  "inputData": {
-    "source": "api",
-    "date": "2024-01-01"
-  }
-}
-```
-
-**Response:**
-
-```json
-{
-  "status": "running",
-  "taskName": "manual_run_001",
-  "taskUUID": "550e8400-e29b-41d4-a716-446655440000"
-}
-```
-
-#### GET /api/status
-
-Returns current execution status.
-
-**Response:**
-
-```json
-{
-  "status": "SUCCESS",
-  "taskName": "manual_run_001",
-  "startTime": "2024-01-01T10:00:00Z",
-  "endTime": "2024-01-01T10:05:00Z",
-  "duration": 300
-}
-```
-
-#### GET /api/tasks
-
-Returns history of task executions.
-
-**Response:**
-
-```json
-{
-  "tasks": [
-    {
-      "taskName": "manual_run_001",
-      "taskUUID": "550e8400-e29b-41d4-a716-446655440000",
-      "status": "SUCCESS",
-      "startTime": "2024-01-01T10:00:00Z",
-      "endTime": "2024-01-01T10:05:00Z"
-    }
-  ]
-}
-```
+**Access:**
+- **API Server**: `http://localhost:8080` (or custom port)
+- **UI Dashboard**: `http://localhost:8081` (API port + 1)
 
 ## Custom Asset Development
 
@@ -588,11 +598,19 @@ defer driver.ConcurrencyUnlock()
 
 ### DataFrame Caching
 
-Enable `is_data_framed` only when necessary to minimize memory usage:
+Enable `is_data_framed` to allow downstream models to query the asset's data using SQL. When enabled, the asset's output is cached as a DataFrame, enabling seamless database queries.
 
 ```yaml
 {{ define "profile.yaml" }}
-    is_data_framed: true  # Only if downstream needs DataFrame
+    is_data_framed: true  # Enable SQL queries on this asset's data
+{{ end }}
+```
+
+Use `persist_inputs: true` to create temporary tables in the destination database for upstream DataFrames, enabling cross-database queries:
+
+```yaml
+{{ define "profile.yaml" }}
+    persist_inputs: true  # Creates temporary tables for upstream DataFrames
 {{ end }}
 ```
 
