@@ -200,36 +200,19 @@ theme = 'teal-theme'
   weight = 5
 
 [[menus.api]]
-  name = 'Command-Line Interface'
-  pageRef = '/api#command-line-interface'
-  weight = 3
-
-[[menus.api]]
-  name = 'teal init'
-  pageRef = '/api#teal-init'
-  parent = 'Command-Line Interface'
-  weight = 1
-
-[[menus.api]]
-  name = 'teal gen'
-  pageRef = '/api#teal-gen'
-  parent = 'Command-Line Interface'
-  weight = 2
-
-[[menus.api]]
   name = 'Custom Asset Development'
   pageRef = '/api#custom-asset-development'
-  weight = 4
+  weight = 3
 
 [[menus.api]]
   name = 'Error Handling'
   pageRef = '/api#error-handling'
-  weight = 5
+  weight = 4
 
 [[menus.api]]
   name = 'Performance Optimization'
   pageRef = '/api#performance-optimization'
-  weight = 6
+  weight = 5
 
 # Quick Start sidebar menu
 [[menus.quickstart]]
