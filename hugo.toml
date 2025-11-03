@@ -65,9 +65,63 @@ theme = 'teal-theme'
   weight = 4
 
 [[menus.docs]]
+  name = 'Configuration'
+  pageRef = '/docs#configuration'
+  weight = 2
+
+[[menus.docs]]
+  name = 'config.yaml'
+  pageRef = '/docs#configyaml'
+  parent = 'Configuration'
+  weight = 1
+
+[[menus.docs]]
+  name = 'profile.yaml'
+  pageRef = '/docs#profileyaml'
+  parent = 'Configuration'
+  weight = 2
+
+[[menus.docs]]
+  name = 'Materializations'
+  pageRef = '/docs#materializations'
+  weight = 3
+
+[[menus.docs]]
+  name = 'Databases'
+  pageRef = '/docs#databases'
+  weight = 4
+
+[[menus.docs]]
+  name = 'DuckDB'
+  pageRef = '/docs#duckdb'
+  parent = 'Databases'
+  weight = 1
+
+[[menus.docs]]
+  name = 'PostgreSQL'
+  pageRef = '/docs#postgresql'
+  parent = 'Databases'
+  weight = 2
+
+[[menus.docs]]
+  name = 'Cross-Database References'
+  pageRef = '/docs#cross-database-references'
+  weight = 5
+
+[[menus.docs]]
+  name = 'Raw Assets'
+  pageRef = '/docs#raw-assets'
+  weight = 6
+
+[[menus.docs]]
+  name = 'Data Testing'
+  pageRef = '/docs#data-testing'
+  weight = 7
+
+[[menus.docs]]
   name = 'CLI Commands'
   pageRef = '/docs#cli-commands-reference'
-  weight = 2
+  weight = 8
 
 [[menus.docs]]
   name = 'teal init'
@@ -98,60 +152,6 @@ theme = 'teal-theme'
   pageRef = '/docs#teal-version'
   parent = 'CLI Commands'
   weight = 5
-
-[[menus.docs]]
-  name = 'Configuration'
-  pageRef = '/docs#configuration'
-  weight = 3
-
-[[menus.docs]]
-  name = 'config.yaml'
-  pageRef = '/docs#configyaml'
-  parent = 'Configuration'
-  weight = 1
-
-[[menus.docs]]
-  name = 'profile.yaml'
-  pageRef = '/docs#profileyaml'
-  parent = 'Configuration'
-  weight = 2
-
-[[menus.docs]]
-  name = 'Materializations'
-  pageRef = '/docs#materializations'
-  weight = 4
-
-[[menus.docs]]
-  name = 'Databases'
-  pageRef = '/docs#databases'
-  weight = 5
-
-[[menus.docs]]
-  name = 'DuckDB'
-  pageRef = '/docs#duckdb'
-  parent = 'Databases'
-  weight = 1
-
-[[menus.docs]]
-  name = 'PostgreSQL'
-  pageRef = '/docs#postgresql'
-  parent = 'Databases'
-  weight = 2
-
-[[menus.docs]]
-  name = 'Cross-Database References'
-  pageRef = '/docs#cross-database-references'
-  weight = 6
-
-[[menus.docs]]
-  name = 'Raw Assets'
-  pageRef = '/docs#raw-assets'
-  weight = 7
-
-[[menus.docs]]
-  name = 'Data Testing'
-  pageRef = '/docs#data-testing'
-  weight = 8
 
 [[menus.docs]]
   name = 'Docker Deployment'
