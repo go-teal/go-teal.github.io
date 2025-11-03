@@ -206,6 +206,8 @@ go run ./cmd/my-test-project-ui/my-test-project-ui.go --port 9090
 
 ## Command-Line Arguments
 
+For complete CLI command documentation with all flags and examples, see the [CLI Commands Reference](/docs/#cli-commands-reference) in the Documentation.
+
 ### teal ui Command
 
 - `--port` - Port for API server (default: `8080`). UI Dashboard runs on port + 1 (default: `8081`)
