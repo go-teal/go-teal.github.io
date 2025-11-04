@@ -694,6 +694,402 @@ Root tests are automatically executed after all DAG tasks complete when running 
 | description | String | | Optional description of what the test validates |
 | connection | String | profile.connection | Connection name from `config.yaml` |
 
+## CLI Commands Reference
+
+Teal CLI provides the following commands to manage your data pipeline projects:
+
+### `teal init`
+
+Creates a basic Teal project structure with default configuration files.
+
+```bash
+teal init
+```
+
+This command initializes a new Teal project with:
+- `config.yaml` (database connections)
+- `profile.yaml` (project configuration)
+- `assets/` directory structure with example models and tests
+- `store/` directory with sample CSV data
+
+**No flags required.**
+
+### `teal gen`
+
+Generates Go code from SQL asset model files.
+
+```bash
+teal gen [flags]
+```
+
+**Flags:**
+- `--project-path string` - Project directory (default: `.`)
+- `--config-file string` - Path to config.yaml (default: `config.yaml`)
+- `--model string` - Name of target model to generate (optional, generates all if not specified)
+
+**Examples:**
+```bash
+teal gen                                    # Generate all models in current directory
+teal gen --project-path ./my-project        # Generate in specific directory
+teal gen --model staging.customers          # Generate specific model only
+teal gen --config-file custom-config.yaml   # Use custom config file
+```
+
+### `teal clean`
+
+Cleans generated files from the project.
+
+```bash
+teal clean [flags]
+```
+
+**Flags:**
+- `--project-path string` - Project directory (default: `.`)
+- `--model string` - Models for cleaning (default: `*` for all)
+- `--clean-main` - Delete production main.go in `cmd/<project-name>/`
+- `--clean-main-ui` - Delete UI debug main.go in `cmd/<project-name>-ui/`
+- `--clean-dockerfile` - Delete Dockerfile
+- `--clean-go-mod` - Delete go.mod and go.sum
+- `--clean-all` - Delete ALL generated files (prompts for confirmation)
+
+**Examples:**
+```bash
+teal clean                                  # Clean all models (with confirmation)
+teal clean --model staging.customers        # Clean specific model
+teal clean --clean-main                     # Clean production main.go only
+teal clean --clean-main-ui                  # Clean UI main.go only
+teal clean --clean-dockerfile               # Clean Dockerfile only
+teal clean --clean-go-mod                   # Clean go.mod and go.sum
+teal clean --clean-all                      # Clean ALL generated files
+teal clean --project-path ./my-project      # Clean in specific directory
+```
+
+**Note:**
+- When cleaning all models (`*`), you will be prompted for confirmation.
+- `--clean-all` will delete ALL generated files including go.mod, Dockerfile, and main files.
+
+**Files NOT Overwritten by `teal gen`:**
+
+The following files are generated only once and will NOT be overwritten on subsequent `teal gen` executions:
+- **`Dockerfile`** - Container configuration (skip if exists)
+- **`go.mod`** - Go module definition (skip if exists)
+- **`cmd/<project-name>/<project-name>.go`** - Production binary main file (skip if exists)
+- **`cmd/<project-name>-ui/<project-name>-ui.go`** - UI debug binary main file (skip if exists)
+
+All other files (assets, tests, configs, docs) are regenerated on every `teal gen` run.
+
+To regenerate these protected files, use the appropriate `--clean-*` flags before running `teal gen`.
+
+### `teal ui`
+
+Starts the UI development server with hot-reload for debugging and monitoring.
+
+```bash
+teal ui [flags]
+```
+
+**Flags:**
+- `--port int` - Port for API server (default: `8080`). UI Dashboard runs on port+1.
+- `--log-level string` - Log level: `debug`, `info`, `warn`, `error` (default: `debug`)
+- `--project-path string` - Project directory (default: `.`)
+
+**Examples:**
+```bash
+teal ui                                     # Start on default port 8080 (Dashboard on 8081)
+teal ui --port 9090                        # Start on port 9090 (Dashboard on 9091)
+teal ui --log-level info                   # Start with info log level
+teal ui --project-path ./my-project        # Start for specific project
+```
+
+The UI provides:
+- **DAG Visualization:** Interactive graph showing all assets and dependencies
+- **Execution Control:** Trigger DAG runs and monitor task status
+- **Test Results:** View test execution results and data quality checks
+- **Asset Inspection:** Examine asset data and execution results
+- **Real-time Logs:** View logs for specific task executions
+
+**Access:** Open `http://localhost:8081` (or custom port + 1) in your browser.
+
+### `teal version`
+
+Shows the current version of Teal CLI.
+
+```bash
+teal version
+```
+
+**No flags required.**
+
+### Getting Help
+
+```bash
+teal --help              # Show all commands and their flags
+teal [command] --help    # Show detailed help for specific command
+```
+
+## Docker Deployment
+
+Teal automatically generates a production-ready `Dockerfile` when you run `teal gen`. The Dockerfile is optimized for containerized deployments and includes best practices for Go applications.
+
+### Generated Dockerfile
+
+The generated `Dockerfile` uses a **multi-stage build** approach and is specifically optimized for **DuckDB compatibility**:
+
+**Base Images:**
+- **Build stage**: `golang:bookworm` (Debian-based)
+- **Runtime stage**: `debian:bookworm-slim` (Debian-based)
+- **Final image size**: ~311MB with embedded DuckDB bindings
+
+**Key Characteristics:**
+
+- **CGO-enabled builds** - Required for DuckDB's native C bindings
+- **glibc-based** (Debian) instead of musl-based (Alpine) for DuckDB compatibility
+- Includes gcc/g++ build dependencies for CGO compilation during build stage
+- Non-root user (`tealuser`) with home directory for DuckDB extension installation
+- Multi-stage build to minimize final image size
+- Copies only the compiled binary and necessary runtime files to final stage
+
+**Important:** If your project does **not use DuckDB**, you can modify the Dockerfile to use smaller Alpine-based images and disable CGO for significantly reduced image sizes (~20-30MB).
+
+### Dockerfile Generation
+
+The `Dockerfile` is generated during `teal gen` and is protected from overwrites:
+
+```bash
+# Generate project with Dockerfile
+teal gen
+
+# Dockerfile is created (if it doesn't exist)
+# On subsequent runs, existing Dockerfile is preserved
+```
+
+**Files NOT Overwritten:**
+- `Dockerfile` - Container configuration (skip if exists)
+- `go.mod` - Go module definition (skip if exists)
+- `cmd/<project-name>/<project-name>.go` - Production main file (skip if exists)
+- `cmd/<project-name>-ui/<project-name>-ui.go` - UI debug main file (skip if exists)
+
+To regenerate the Dockerfile, use the `--clean-dockerfile` flag:
+
+```bash
+# Remove existing Dockerfile
+teal clean --clean-dockerfile
+
+# Regenerate Dockerfile
+teal gen
+```
+
+### Building Docker Image
+
+Build the Docker image for your Teal project:
+
+```bash
+# Build with project name as image tag
+docker build -t my-test-project:latest .
+
+# Build with custom tag
+docker build -t my-registry.io/my-test-project:v1.0.0 .
+```
+
+### Running Docker Container
+
+Run the containerized Teal pipeline:
+
+**Basic execution:**
+
+```bash
+# Run with default settings
+docker run my-test-project:latest
+
+# Run with custom task name
+docker run my-test-project:latest --task-name "batch_$(date +%Y%m%d)"
+```
+
+**With mounted volumes:**
+
+```bash
+# Mount data directory for CSV files or external databases
+docker run -v $(pwd)/store:/app/store \
+  my-test-project:latest
+
+# Mount configuration files (for dynamic config)
+docker run -v $(pwd)/config.yaml:/app/config.yaml \
+  -v $(pwd)/store:/app/store \
+  my-test-project:latest
+```
+
+**With environment variables:**
+
+```bash
+# Pass environment variables for connections
+docker run \
+  -e DB_HOST=postgres.example.com \
+  -e DB_PORT=5432 \
+  -e DB_USER=myuser \
+  -e DB_PASSWORD=mypassword \
+  my-test-project:latest
+```
+
+**Production deployment with logging:**
+
+```bash
+# Run with JSON logs and minimal log level
+docker run \
+  -v $(pwd)/store:/app/store \
+  my-test-project:latest \
+  --task-name "prod_$(date +%Y%m%d_%H%M%S)" \
+  --log-level error \
+  --log-output json
+```
+
+### Docker Compose Example
+
+For complex deployments with multiple services:
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  teal-pipeline:
+    build: .
+    image: my-test-project:latest
+    container_name: teal-etl
+    volumes:
+      - ./store:/app/store
+      - ./logs:/app/logs
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    command: [
+      "--task-name", "scheduled_pipeline",
+      "--log-level", "info",
+      "--log-output", "json"
+    ]
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    container_name: teal-postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=analytics
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
+```
+
+Run with Docker Compose:
+
+```bash
+# Start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f teal-pipeline
+
+# Stop services
+docker-compose down
+```
+
+### Scheduling with Docker
+
+**Using cron with Docker:**
+
+```bash
+# Add to crontab
+# Run daily at 2 AM
+0 2 * * * docker run --rm -v /path/to/store:/app/store my-test-project:latest --task-name "daily_$(date +\%Y\%m\%d)"
+```
+
+**Using Kubernetes CronJob:**
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: teal-pipeline
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: teal-etl
+            image: my-registry.io/my-test-project:v1.0.0
+            args:
+            - "--task-name"
+            - "k8s_scheduled"
+            - "--log-level"
+            - "info"
+            - "--log-output"
+            - "json"
+            volumeMounts:
+            - name: data
+              mountPath: /app/store
+          volumes:
+          - name: data
+            persistentVolumeClaim:
+              claimName: teal-data-pvc
+          restartPolicy: OnFailure
+```
+
+### Optimizing Dockerfile for Non-DuckDB Projects
+
+If your project uses PostgreSQL, MySQL, or other databases without DuckDB, you can optimize the Dockerfile for smaller image sizes:
+
+**Modified Dockerfile (Alpine-based, ~20-30MB):**
+
+```dockerfile
+# Build stage
+FROM golang:alpine AS builder
+
+WORKDIR /build
+
+# Install build dependencies
+RUN apk add --no-cache git
+
+# Copy go mod files
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build with CGO disabled for static binary
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app ./cmd/my-test-project
+
+# Runtime stage
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup -S tealuser && adduser -S tealuser -G tealuser
+
+# Copy binary from builder
+COPY --from=builder /build/app .
+COPY config.yaml .
+COPY profile.yaml .
+
+# Set ownership
+RUN chown -R tealuser:tealuser /app
+
+USER tealuser
+
+ENTRYPOINT ["./app"]
+```
+
 ## General Architecture
 
 ```mermaid
