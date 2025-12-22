@@ -299,22 +299,28 @@ theme = 'teal-theme'
   weight = 6
 
 [[menus.quickstart]]
-  name = 'Using Make'
-  pageRef = '/quickstart#using-make-recommended-for-development'
+  name = 'Hot-Reload Development'
+  pageRef = '/quickstart#start-development-with-hot-reload-recommended'
   parent = 'Run Your Project'
   weight = 1
+
+[[menus.quickstart]]
+  name = 'Using Make'
+  pageRef = '/quickstart#using-make-alternative-for-development'
+  parent = 'Run Your Project'
+  weight = 2
 
 [[menus.quickstart]]
   name = 'Production Mode'
   pageRef = '/quickstart#production-mode'
   parent = 'Run Your Project'
-  weight = 2
+  weight = 3
 
 [[menus.quickstart]]
   name = 'Debug UI Mode'
-  pageRef = '/quickstart#debug-ui-mode'
+  pageRef = '/quickstart#debug-ui-mode-without-hot-reload'
   parent = 'Run Your Project'
-  weight = 3
+  weight = 4
 
 [[menus.quickstart]]
   name = 'Command-Line Arguments'

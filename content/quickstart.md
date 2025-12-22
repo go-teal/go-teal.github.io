@@ -146,18 +146,20 @@ When changes are detected, it automatically:
 
 ### Using Make (Alternative for Development)
 
+The generated project includes a `Makefile` with the `make run` command for quick development:
+
 ```bash
-# Generate assets and run UI debug server (default port 8080)
 make run
+```
 
-# Run on custom port
+This command performs two steps:
+1. Regenerates all Go code from your SQL assets using `teal gen`
+2. Starts the UI debug server on the default port (8080)
+
+To run on a custom port:
+
+```bash
 make run PORT=9090
-
-# Build production binary
-make build
-
-# Run with tests
-make run-with-tests
 ```
 
 ### Production Mode
