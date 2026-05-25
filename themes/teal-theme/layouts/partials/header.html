@@ -4,6 +4,10 @@
             <div class="logo-icon">T</div>
             <span>Teal</span>
         </a>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden>
+        <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+        </label>
         <nav>
             <ul>
                 {{ range .Site.Menus.main }}

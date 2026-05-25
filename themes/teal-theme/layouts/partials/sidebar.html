@@ -1,4 +1,9 @@
 <aside class="sidebar">
+    <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle" hidden>
+    <label for="sidebar-toggle" class="sidebar-toggle-label">
+        <span>On this page</span>
+        <span class="sidebar-toggle-chevron" aria-hidden="true">▾</span>
+    </label>
     {{ $currentPage := . }}
     {{ $currentURL := .RelPermalink }}
 
