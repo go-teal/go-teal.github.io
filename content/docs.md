@@ -571,6 +571,22 @@ Teal supports several materialization types for your SQL models:
 | db_key_env | String | Environment variable name for client key path |
 | db_sslnmode | String | SSL mode: `disable`, `require`, `verify-ca`, `verify-full` |
 | db_sslnmode_env | String | Environment variable name for SSL mode |
+| pool_max_conns | Int | Max open connections in the pgxpool. `0` (or unset) keeps pgxpool's default of `4`. Raise this if the DAG has many independent assets that can execute in parallel; cap it well below your PostgreSQL `max_connections` budget. |
+
+The PostgreSQL driver is backed by `pgxpool.Pool`, so concurrent asset execution checks out separate connections from the pool. With the default of 4, a DAG with more concurrently-runnable assets will queue on `Begin()`; bump `pool_max_conns` to widen the concurrency.
+
+## Build Tags
+
+Teal uses Go build tags to keep production binaries small. The **production binary** (`cmd/<project>/`) compiles with no extra tags and pulls only what the DAG runtime needs (pgx + zerolog + pongo2 + a small graph of utilities). The **debug UI binary** (`cmd/<project>-ui/`) depends on `pkg/ui`, which in turn brings in **gin** + `gin-contrib/cors` + a heavy transitive tree (sonic, bytedance JIT, validator, mimetype, quic-go, cloudwego/base64x, ugorji codec, go-playground locales/translator, klauspost cpuid). To keep that tree out of production builds, `pkg/ui` and the generated `cmd/<project>-ui` main file are both gated behind the `teal_ui` build tag.
+
+| Target | Command | Includes |
+|--------|---------|----------|
+| Production binary | `go build ./cmd/<project>` | DAG runtime only — no UI, no gin tree |
+| Debug UI binary | `go build -tags teal_ui ./cmd/<project>-ui` | Adds `pkg/ui`, gin, debug REST API, and the transitive tree above |
+
+The generated `Makefile` already wires the tag into the `build-ui` and `run` targets, so `make build-ui` / `make run` work without remembering the flag manually. Only direct `go build` / `go run` of the UI binary needs the explicit `-tags teal_ui`.
+
+**Why this matters in practice:** on platforms with a fixed build-time budget (DigitalOcean Functions caps build time at 120 s, AWS Lambda has similar limits), the gin transitive tree alone is enough to blow that budget. Without the build tag, a slim Teal pipeline that runs in sub-second at runtime can fail to deploy. With the tag, the production build compiles in tens of seconds and deploys cleanly.
 
 ## Cross-Database References
 
@@ -1118,9 +1134,15 @@ classDiagram
         +Rollback(tx any) error
         +Close() error
         +Exec(tx any, sql string) error
+        +GetListOfFields(tx any, tableName string) []string
+        +CheckTableExists(tx any, tableName string) bool
+        +CheckSchemaExists(tx any, schemaName string) bool
         +ToDataFrame(sql string) DataFrame, error
         +PersistDataFrame(tx any, name string, df DataFrame) error
         +SimpleTest(sql string) string, error
+        +GetRawConnection() any
+        +ConcurrencyLock()
+        +ConcurrencyUnlock()
     }
 
     class DuckDB {
@@ -1128,6 +1150,14 @@ classDiagram
     }
 
     class PostgreSQL {
+        <<class>>
+    }
+
+    class ClickHouse {
+        <<class>>
+    }
+
+    class MySQL {
         <<class>>
     }
 
@@ -1157,6 +1187,8 @@ classDiagram
     RawAsset o-- Executor : uses
     DBDriver <|.. DuckDB : implements
     DBDriver <|.. PostgreSQL : implements
+    DBDriver <|.. ClickHouse : implements
+    DBDriver <|.. MySQL : implements
     DAG <|.. ChannelDAG : implements
     ChannelDAG *-- Routine : contains
     Routine o-- Asset : uses
@@ -1200,6 +1232,20 @@ The `teal ui` command provides:
 - Graceful shutdown handling
 - Built-in debouncing to prevent excessive regenerations
 
+**Direct execution (without hot-reload):**
+
+The UI binary lives behind the `teal_ui` build tag — pass `-tags teal_ui` to `go run` or `go build` so that `pkg/ui` (and its gin transitive tree) gets included. Production runs default to building **without** this tag so the prod binary stays slim; see [Build Tags](#build-tags) for the full rationale.
+
+```bash
+# Run UI debug server directly (note the -tags teal_ui)
+go run -tags teal_ui ./cmd/my-test-project-ui/my-test-project-ui.go
+
+# Run on custom port
+go run -tags teal_ui ./cmd/my-test-project-ui/my-test-project-ui.go --port 9090
+```
+
+The generated `Makefile` already applies the tag to the `build-ui` and `run` targets, so `make build-ui` and `make run` work without remembering the flag.
+
 **Direct execution command-line arguments:**
 - `--port` - Port for API server (default: `8080`). UI Dashboard runs on port + 1 (default: `8081`)
 - `--log-output` - Log output format: `json` or `raw` (default: `raw`)
@@ -1231,12 +1277,16 @@ teal ui
 teal ui --port 9090
 ```
 
-The UI Dashboard is served on `http://localhost:8081` (or custom port + 1) and automatically connects to the API server. All frontend assets are embedded in the binary for zero-dependency deployment.
+The UI Dashboard is served by the `teal` CLI binary itself (not your generated project) on `http://localhost:8081` (or custom port + 1). All frontend assets are embedded in the `teal` binary for zero-dependency deployment.
 
 **Architecture:**
-- **API Server** (port 8080): REST API for DAG operations, tests, and data access
-- **UI Dashboard** (port 8081): Vue.js-based web interface with embedded assets
-- **Single Binary**: Both servers run from the same executable with no external dependencies
+- **UI Assets Server** (port 8081): Static file server embedded in the `teal` CLI binary serving the React-based dashboard.
+  - Located in the `teal` binary (`internal/domain/services/ui_assets_server.go`)
+  - **Persists across API server restarts** during hot-reload
+- **Debug API Server** (port 8080): Your generated project's REST API for DAG operations, tests, and data access.
+  - Located in `./cmd/<project-name>-ui/<project-name>-ui.go` in your generated project
+  - **Restarts automatically** when assets, config, or profile files change
+- **Hot-Reload**: When files change, only the Debug API server restarts; the UI Assets server continues running without interruption.
 
 **How It Works:**
 

@@ -198,12 +198,14 @@ Then run with various options:
 
 ### Debug UI Mode (Without Hot-Reload)
 
+The UI binary is gated behind the `teal_ui` build tag, so pass `-tags teal_ui` when running or building it directly (the generated `Makefile`'s `build-ui` / `run` targets already include it). See [Build Tags](/docs/#build-tags) for why.
+
 ```bash
-# Run UI debug server directly
-go run ./cmd/my-test-project-ui/my-test-project-ui.go
+# Run UI debug server directly (note the -tags teal_ui)
+go run -tags teal_ui ./cmd/my-test-project-ui/my-test-project-ui.go
 
 # Run on custom port
-go run ./cmd/my-test-project-ui/my-test-project-ui.go --port 9090
+go run -tags teal_ui ./cmd/my-test-project-ui/my-test-project-ui.go --port 9090
 ```
 
 ## Command-Line Arguments
