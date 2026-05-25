@@ -104,24 +104,29 @@ theme = 'teal-theme'
   weight = 2
 
 [[menus.docs]]
+  name = 'Build Tags'
+  pageRef = '/docs#build-tags'
+  weight = 5
+
+[[menus.docs]]
   name = 'Cross-Database References'
   pageRef = '/docs#cross-database-references'
-  weight = 5
+  weight = 6
 
 [[menus.docs]]
   name = 'Raw Assets'
   pageRef = '/docs#raw-assets'
-  weight = 6
+  weight = 7
 
 [[menus.docs]]
   name = 'Data Testing'
   pageRef = '/docs#data-testing'
-  weight = 7
+  weight = 8
 
 [[menus.docs]]
   name = 'CLI Commands'
   pageRef = '/docs#cli-commands-reference'
-  weight = 8
+  weight = 9
 
 [[menus.docs]]
   name = 'teal init'
@@ -156,7 +161,7 @@ theme = 'teal-theme'
 [[menus.docs]]
   name = 'Docker Deployment'
   pageRef = '/docs#docker-deployment'
-  weight = 9
+  weight = 10
 
 [[menus.docs]]
   name = 'Generated Dockerfile'
@@ -197,7 +202,7 @@ theme = 'teal-theme'
 [[menus.docs]]
   name = 'General Architecture'
   pageRef = '/docs#general-architecture'
-  weight = 10
+  weight = 11
 
 # API Reference sidebar menu
 [[menus.api]]
