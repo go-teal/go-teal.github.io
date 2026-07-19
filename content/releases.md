@@ -31,6 +31,9 @@ The `teal ui` dashboard gained a set of asset actions and canvas improvements:
 - **Data panel follows the latest write** — select results are no longer hidden
   behind a prior mutation
   ([v1.2.8](https://github.com/go-teal/teal/releases/tag/v1.2.8))
+- **"0 records" hint** — an empty Run Select or Data Preview result is flagged in
+  yellow instead of the green success message
+  ([v1.2.11](https://github.com/go-teal/teal/releases/tag/v1.2.11))
 
 ## Correctness & driver fixes
 
@@ -64,6 +67,7 @@ The `teal ui` dashboard gained a set of asset actions and canvas improvements:
 
 | Version | Highlight |
 | --- | --- |
+| [v1.2.11](https://github.com/go-teal/teal/releases/tag/v1.2.11) | "0 records" hint (yellow) |
 | [v1.2.10](https://github.com/go-teal/teal/releases/tag/v1.2.10) | Data Preview |
 | [v1.2.9](https://github.com/go-teal/teal/releases/tag/v1.2.9) | Action toolbar, drag-to-pan, cache fix |
 | [v1.2.8](https://github.com/go-teal/teal/releases/tag/v1.2.8) | Drop / Truncate, Data panel fix |
