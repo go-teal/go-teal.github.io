@@ -30,9 +30,35 @@ theme = 'teal-theme'
   weight = 4
 
 [[menus.main]]
+  name = 'Releases'
+  pageRef = '/releases'
+  weight = 5
+
+[[menus.main]]
   name = 'GitHub'
   url = 'https://github.com/go-teal/teal'
-  weight = 5
+  weight = 6
+
+# Releases sidebar menu
+[[menus.releases]]
+  name = 'Debug UI dashboard'
+  pageRef = '/releases#debug-ui-dashboard'
+  weight = 1
+
+[[menus.releases]]
+  name = 'Correctness & driver fixes'
+  pageRef = '/releases#correctness--driver-fixes'
+  weight = 2
+
+[[menus.releases]]
+  name = 'Build & maintenance'
+  pageRef = '/releases#build--maintenance'
+  weight = 3
+
+[[menus.releases]]
+  name = 'All releases'
+  pageRef = '/releases#all-releases'
+  weight = 4
 
 # Documentation sidebar menu
 [[menus.docs]]
